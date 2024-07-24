@@ -9,9 +9,21 @@ function AnimalList() {
   }, []);
 
   async function getAllTiere() {
-    const response = await axios.get("http://localhost:3000/tiere");
-    setTiere(response.data);
+    try {
+      const response = await axios.get("http://localhost:3000/tiere");
+      setTiere(response.data);
+    } catch (error) {
+      console.error("Fehler beim fetchen der Tiere", error);
+    }
+  }
 
+  async function handleDelete(id) {
+    try {
+      await axios.delete(`http://localhost:3000/tiere/${id}`);
+      getAllTiere();
+    } catch (error) {
+      console.error("Fehler beim löschen", error);
+    }
   }
   return (
     <div className="animal-list">
@@ -19,11 +31,14 @@ function AnimalList() {
       <input type="text" placeholder="Tiere Suchen.."></input>
 
       <ul>
-        <li>
-          Rudolfo (Hund): Fieber, 01.01.2020, 3.2kg
-          <Link to="/editAnimal">Bearbeiten</Link>
-          <button>Delete</button>
-        </li>
+        {tiere.map((tier) => (
+          <li key={tier.id}>
+            {tier.name} ({tier.tierart}) : {tier.krankheit}, {tier.geburtstag},{" "}
+            {tier.gewicht}kg
+            <Link to="/editAnimal">Bearbeiten</Link>
+            <button onClick={() => handleDelete(tier.id)}>Delete</button>
+          </li>
+        ))}
       </ul>
     </div>
   );
