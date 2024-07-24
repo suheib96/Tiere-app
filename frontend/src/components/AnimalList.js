@@ -6,7 +6,7 @@ function AnimalList() {
 
   useEffect(() => {
     getAllTiere();
-  }, [tiere]);
+  }, []);
 
   async function getAllTiere() {
     const response = await axios.get("http://localhost:3000/tiere");
