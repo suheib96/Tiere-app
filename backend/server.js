@@ -1,6 +1,7 @@
 const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database(":memory:");
 
+
 db.serialize(() => {
   createTableQuery = `CREATE TABLE IF NOT EXISTS tiere (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -33,9 +34,10 @@ db.serialize(() => {
 
 
 const express = require("express");
+const cors = require("cors")
 
 const app = express();
-
+app.use(cors())
 const PORT = 3000;
 app.use(express.json()) // Dieser Code ermöglicht uns einen Body in dem Request zu haben
 
