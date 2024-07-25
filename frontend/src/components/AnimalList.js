@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 function AnimalList() {
   const [tiere, setTiere] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     getAllTiere();
@@ -25,17 +26,33 @@ function AnimalList() {
       console.error("Fehler beim löschen", error);
     }
   }
+  function handleSearch(event) {
+    setSearchTerm(event.target.value);
+  }
+
+  const filteredTiere = tiere.filter(
+    (tier) =>
+      tier.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      tier.tierart.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      tier.krankheit.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="animal-list">
       <h2>Alle Tiere</h2>
-      <input type="text" placeholder="Tiere Suchen.."></input>
+      <input
+        value={searchTerm}
+        type="text"
+        placeholder="Tiere Suchen.."
+        onChange={handleSearch}
+      ></input>
 
       <ul>
-        {tiere.map((tier) => (
+        {filteredTiere.map((tier) => (
           <li key={tier.id}>
             {tier.name} ({tier.tierart}) : {tier.krankheit}, {tier.geburtstag},{" "}
             {tier.gewicht}kg
-            <Link to="/editAnimal">Bearbeiten</Link>
+            <Link to={`/editAnimal/${tier.id}`}>Bearbeiten</Link>
             <button onClick={() => handleDelete(tier.id)}>Delete</button>
           </li>
         ))}
