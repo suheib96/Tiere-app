@@ -1,8 +1,10 @@
 import React, {useState, useEffect} from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import axios from "axios"
 
 function EditAnimal() {
+
+    const navigate = useNavigate()
     const [tier, setTier] = useState({
         tierart: "",
         name: "",
@@ -11,7 +13,7 @@ function EditAnimal() {
         gewicht: ""
     })
     const {id} = useParams()
-    console.log(id)
+    // console.log(id)
 
     useEffect(() => {
         getOneTier()
@@ -25,15 +27,23 @@ function EditAnimal() {
             console.error("Fehler beim fetchen des Tieres", error);
           }
     }
-    console.log(tier)
+    // console.log(tier)
 
 
-    function handleSubmit(){
+    async function handleSubmit(event){
+        event.preventDefault()
+        try{
+            await axios.put(`http://localhost:3000/tiere/${id}`, tier)
+            alert("Aktualisierung erfolgreich, sie werden nun auf die Hauptseite weitergeleitet")
+            navigate("/list")
+        }catch (error){
+            console.error("Fehler beim akutalisieren", error)
+        }
         
     }
 
     function handleChange(event){
-       setTier({...tier, [event.target.name]: [event.target.value]})
+       setTier({...tier, [event.target.name]: event.target.value})
 
     }
   return (
