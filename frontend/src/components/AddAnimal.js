@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import BACKEND_PATH from "../paths";
 
 function AddAnimal() {
   const [tier, setTier] = useState({
@@ -13,7 +14,7 @@ function AddAnimal() {
   async function handleSubmit(event) {
     event.preventDefault();
     try {
-      await axios.post("http://localhost:3000/tiere", tier);
+      await axios.post(`${BACKEND_PATH}/tiere`, tier);
       alert("Tier wurde erfolgreich gespeichert")
       setTier({
         tierart: "",

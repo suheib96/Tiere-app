@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import axios from "axios"
+import BACKEND_PATH from '../paths'
 
 function EditAnimal() {
 
@@ -21,7 +22,7 @@ function EditAnimal() {
 
     async function getOneTier(){
         try {
-            const response = await axios.get(`http://localhost:3000/tiere/${id}`);
+            const response = await axios.get(`${BACKEND_PATH}/tiere/${id}`);
             setTier(response.data)
           } catch (error) {
             console.error("Fehler beim fetchen des Tieres", error);
@@ -33,7 +34,7 @@ function EditAnimal() {
     async function handleSubmit(event){
         event.preventDefault()
         try{
-            await axios.put(`http://localhost:3000/tiere/${id}`, tier)
+            await axios.put(`${BACKEND_PATH}/tiere/${id}`, tier)
             alert("Aktualisierung erfolgreich, sie werden nun auf die Hauptseite weitergeleitet")
             navigate("/list")
         }catch (error){
