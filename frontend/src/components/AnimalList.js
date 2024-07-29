@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import BACKEND_PATH from "../paths.js"
+
 function AnimalList() {
   const [tiere, setTiere] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -11,7 +13,7 @@ function AnimalList() {
 
   async function getAllTiere() {
     try {
-      const response = await axios.get("http://localhost:3000/tiere");
+      const response = await axios.get(`${BACKEND_PATH}/tiere`);
       setTiere(response.data);
     } catch (error) {
       console.error("Fehler beim fetchen der Tiere", error);
@@ -20,7 +22,7 @@ function AnimalList() {
 
   async function handleDelete(id) {
     try {
-      await axios.delete(`http://localhost:3000/tiere/${id}`);
+      await axios.delete(`${BACKEND_PATH}/tiere/${id}`);
       getAllTiere();
     } catch (error) {
       console.error("Fehler beim löschen", error);
