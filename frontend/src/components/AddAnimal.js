@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 
 function AddAnimal() {
+    const apiUrl = process.env.REACT_APP_BACKEND_API_URL || "http://localhost:3000"
   const [tier, setTier] = useState({
     tierart: "",
     name: "",
@@ -13,7 +14,7 @@ function AddAnimal() {
   async function handleSubmit(event) {
     event.preventDefault();
     try {
-      await axios.post("http://localhost:3000/tiere", tier);
+      await axios.post(`${apiUrl}/tiere`, tier);
       alert("Tier wurde erfolgreich gespeichert")
       setTier({
         tierart: "",

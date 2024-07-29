@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import axios from "axios"
 
 function EditAnimal() {
+    const apiUrl = process.env.REACT_APP_BACKEND_API_URL || "http://localhost:3000"
 
     const navigate = useNavigate()
     const [tier, setTier] = useState({
@@ -21,7 +22,7 @@ function EditAnimal() {
 
     async function getOneTier(){
         try {
-            const response = await axios.get(`http://localhost:3000/tiere/${id}`);
+            const response = await axios.get(`${apiUrl}/tiere/${id}`);
             setTier(response.data)
           } catch (error) {
             console.error("Fehler beim fetchen des Tieres", error);
@@ -33,7 +34,7 @@ function EditAnimal() {
     async function handleSubmit(event){
         event.preventDefault()
         try{
-            await axios.put(`http://localhost:3000/tiere/${id}`, tier)
+            await axios.put(`${apiUrl}/tiere/${id}`, tier)
             alert("Aktualisierung erfolgreich, sie werden nun auf die Hauptseite weitergeleitet")
             navigate("/list")
         }catch (error){
