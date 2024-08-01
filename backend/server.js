@@ -2,6 +2,7 @@ const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database(":memory:");
 
 
+
 db.serialize(() => {
   createTableQuery = `CREATE TABLE IF NOT EXISTS tiere (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -35,10 +36,21 @@ db.serialize(() => {
 
 const express = require("express");
 const cors = require("cors")
+const {register,Counter} = require("prom-client") // prometheus Library 
+
+// Hier werden die Metriken erstellt
+const deleteRequestTotal = new Counter({   
+    name: 'delete_request_total',
+    help: 'Die Gesammte Summe der gelöschten Tiere',
+  });
+  const getAllRequestTotal = new Counter({   
+    name: 'get_all_request_total',
+    help: 'Die Gesammte Summe der GetAll Anfragen',
+  });
 
 const app = express();
 app.use(cors())
-const PORT = 3000;
+const PORT = 3005; // Vorher 3000 - kollidiert aber mit Grafana Standard Port (Port beliebig anpassbar) 
 app.use(express.json()) // Dieser Code ermöglicht uns einen Body in dem Request zu haben
 
 app.get("/", (req, res) => {
@@ -51,6 +63,8 @@ app.get("/tiere" ,(req,res)=>{
             console.error(err)
             res.status(500).send("Internal Server Error")
         }else{
+            // Hier wird einer der erstellen Metriken um 1 erhöht wenn der Get Request erfolgreich durchläuft
+            getAllRequestTotal.inc()
             res.json(rows)
         }
     })
@@ -106,6 +120,11 @@ app.put("/tiere/:id", (req,res) => {
         }
     })
 })
+// Prometheus Metric GET Route 
+app.get("/metrics", async (req,res) => {
+    res.set('Content-Type', register.contentType);
+    res.end(await register.metrics());
+})
 
 app.delete("/tiere/:id", (req,res) =>{
     const id =req.params.id
@@ -118,6 +137,8 @@ app.delete("/tiere/:id", (req,res) =>{
             res.status(500).send("Internal Server Error")
         }
         else{
+            // Hier wird einer der erstellen Metriken um 1 erhöht wenn der Delete Request erfolgreich durchläuft
+            deleteRequestTotal.inc()
             res.status(200).send("Eintrag wurde erfolgreich gelöscht")
         }
     })
